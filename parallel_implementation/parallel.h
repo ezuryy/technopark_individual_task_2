@@ -2,7 +2,7 @@
 #define TEST_PROCESSES_PARALLEL_H
 
 #include <common_functions.h>
-#include <libc.h>
+#include <string.h>
 #include <sys/resource.h>
 
 int find_max(const int* array, size_t size);
