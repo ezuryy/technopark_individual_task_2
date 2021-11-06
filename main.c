@@ -1,5 +1,6 @@
 #include <consistent.h>
 #include <parallel.h>
+#include <time.h>
 
 int main() {
   vector_t v;
