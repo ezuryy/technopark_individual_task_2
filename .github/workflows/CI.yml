@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt install
+          sudo apt install lcov cppcheck valgrind gcovr
+          git submodule update --init
+      - name: Build
+        run: |
+          cmake -H. -B_builds
+          cmake --build _builds
+      - name: Test common files
+        run: |
+          cd _builds
+          ./test_common_files
+      - name: Test consistent implementation
+        run: |
+          cd _builds
+          ./test_consistent
+      - name: Test parallel implementation
+        run: |
+          cd _builds
+          ./test_parallel
+      - name: Cppcheck
+        run: |
+          cppcheck --enable=all --suppress=missingInclude --error-exitcode=1 --inconclusive --language=c main.c common_functions/common_functions.c common_functions/common_functions.h parallel_implementation/parallel.h parallel_implementation/parallel.c consistent_implementation/consistent.h consistent_implementation/consistent.c test/test_common_files.cpp test/test_consistent.cpp test/test_parallel.cpp
+      - name: Check valgrind
+        run: |
+          cd _builds
+          valgrind --leak-check=full --error-exitcode=1 ./test_common_files
+          valgrind --leak-check=full --error-exitcode=1 ./test_consistent
+          valgrind --leak-check=full --error-exitcode=1 ./test_parallel
+      - name: Create coverage
+        run: |
+          cd _builds
+          ./test_restaurant
+          cd ..
+          mkdir report
+          gcovr -r . --exclude _builds/ --exclude main.c --html --html-details -o report/my_coverage.html
+      - name: Code coverage report html
+        uses: actions/upload-artifact@v2
+        with:
+          name: codecov_report
+          path: report
+      - name: Run clang-format style check
+        uses: DoozyX/clang-format-lint-action@v0.12
+        with:
+          source: './common_functions ./consistent_implementation ./parallel_implementation ./test'
+          exclude: './_builds'
+          extensions: 'h,cpp,c'
+          clangFormatVersion: 12
+          style: google

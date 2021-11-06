@@ -1,0 +1,132 @@
+#include <gtest/gtest.h>
+
+extern "C" {
+#include <common_functions.h>
+}
+
+TEST(Test1, create_vector) {
+  vector_t v;
+  EXPECT_TRUE(create_vector(&v));
+  EXPECT_EQ(v.size, 0);
+  EXPECT_EQ(v.capacity, 1);
+  EXPECT_TRUE(delete_vector(&v));
+}
+
+TEST(Test2, push_back) {
+  vector_t v;
+  EXPECT_TRUE(create_vector(&v));
+  push_back(&v, 1);
+  EXPECT_EQ(v.size, 1);
+  EXPECT_EQ(v.capacity, 1);
+  push_back(&v, 2);
+  EXPECT_EQ(v.size, 2);
+  EXPECT_EQ(v.capacity, 2);
+  push_back(&v, 3);
+  EXPECT_EQ(v.size, 3);
+  EXPECT_EQ(v.capacity, 4);
+  EXPECT_TRUE(delete_vector(&v));
+}
+
+TEST(Test3, print_without_data) {
+  vector_t v;
+  create_vector(&v);
+
+  testing::internal::CaptureStdout();
+  print_vector(&v);
+  std::string output = testing::internal::GetCapturedStdout();
+  std::string answer = "\n";
+  EXPECT_EQ(output, answer);
+
+  EXPECT_TRUE(delete_vector(&v));
+}
+
+TEST(Test4, print_with_data) {
+  vector_t v;
+  create_vector(&v);
+  push_back(&v, 1);
+  push_back(&v, 2);
+  push_back(&v, 3);
+
+  testing::internal::CaptureStdout();
+  print_vector(&v);
+  std::string output = testing::internal::GetCapturedStdout();
+  EXPECT_EQ(output, "1 2 3 \n");
+
+  EXPECT_TRUE(delete_vector(&v));
+}
+
+TEST(Test5, print_with_nullptr) {
+  testing::internal::CaptureStdout();
+  print_vector(nullptr);
+  std::string output = testing::internal::GetCapturedStdout();
+  EXPECT_EQ(output, "");
+}
+
+TEST(Test6, test_file_input_output) {
+  vector_t v;
+  create_vector(&v);
+
+  FILE* file;
+  file = fopen("../test/input.txt", "r");
+  EXPECT_TRUE(read_vector(&v, file));
+  fclose(file);
+
+  testing::internal::CaptureStdout();
+  print_vector(&v);
+  std::string output = testing::internal::GetCapturedStdout();
+  EXPECT_EQ(output, "1 2 -10 20 15 \n");
+  delete_vector(&v);
+}
+
+TEST(Test7, test_max_jump_end) {
+  vector_t v;
+  create_vector(&v);
+
+  FILE* file;
+  file = fopen("../test/jump1.txt", "r");
+  EXPECT_TRUE(read_vector(&v, file));
+  fclose(file);
+
+  int result =
+      find_max_temperature_jump(v.temperature_array, v.size, 0, v.size);
+  EXPECT_EQ(result, 40);
+  delete_vector(&v);
+}
+
+TEST(Test8, test_max_jump_start) {
+  vector_t v;
+  create_vector(&v);
+
+  FILE* file;
+  file = fopen("../test/jump2.txt", "r");
+  EXPECT_TRUE(read_vector(&v, file));
+  fclose(file);
+
+  int result1 =
+      find_max_temperature_jump(v.temperature_array, v.size, 0, v.size);
+  EXPECT_EQ(result1, 15);
+
+  int result2 =
+      find_max_temperature_jump(v.temperature_array, v.size, 1, v.size);
+  EXPECT_EQ(result2, 15);
+
+  int result3 = find_max_temperature_jump(nullptr, 0, 0, 0);
+  EXPECT_EQ(result3, -1);
+
+  delete_vector(&v);
+}
+
+TEST(Test9, null) {
+  EXPECT_FALSE(create_vector(nullptr));
+  EXPECT_FALSE(push_back(nullptr, 1));
+
+  vector_t v;
+  EXPECT_TRUE(create_vector(&v));
+  v.temperature_array = nullptr;
+  EXPECT_FALSE(push_back(&v, 1));
+
+  EXPECT_FALSE(read_vector(nullptr, stdin));
+  EXPECT_FALSE(read_vector(&v, nullptr));
+
+  EXPECT_FALSE(delete_vector(nullptr));
+}
