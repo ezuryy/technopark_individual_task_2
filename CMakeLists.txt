@@ -4,8 +4,9 @@ project(test_processes)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_C_FLAGS "-Wall -Werror -fprofile-arcs -ftest-coverage -fpic")
-set(CMAKE_CXX_FLAGS "-Wall -Werror -pedantic -fprofile-arcs -ftest-coverage -fpic")
+set(CMAKE_C_FLAGS "-Wall -Werror -fprofile-arcs -ftest-coverage")
+set(CMAKE_CXX_FLAGS "-Wall -Werror -pedantic -fprofile-arcs -ftest-coverage")
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # libraries
 add_library(common_files STATIC
