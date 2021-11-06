@@ -16,8 +16,10 @@ jobs:
           git submodule update --init
       - name: Build
         run: |
-          cmake -H. -B_builds
-          cmake --build _builds
+          mkdir _builds
+          cd _builds
+          cmake ..
+          make all
       - name: Test common files
         run: |
           cd _builds
