@@ -44,7 +44,9 @@ jobs:
       - name: Create coverage
         run: |
           cd _builds
-          ./test_restaurant
+          ./test_common_files
+          ./test_consistent
+          ./test_parallel
           cd ..
           mkdir report
           gcovr -r . --exclude _builds/ --exclude main.c --html --html-details -o report/my_coverage.html
