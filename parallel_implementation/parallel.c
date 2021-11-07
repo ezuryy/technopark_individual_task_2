@@ -20,7 +20,8 @@ int parallel_process_job(const vector_t *v) {
   struct rlimit rlp;
   getrlimit(RLIMIT_NPROC, &rlp);
   size_t step = 5;
-  size_t max_pid = ceil((double)v->size / (double)step);
+  size_t max_pid =
+      (size_t)(((double)v->size + (double)step - 1) / (double)step);
   if (max_pid > rlp.rlim_max) {
     max_pid = rlp.rlim_max;
   }
