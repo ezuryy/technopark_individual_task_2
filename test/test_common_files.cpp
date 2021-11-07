@@ -29,7 +29,7 @@ TEST(Test2, push_back) {
 
 TEST(Test3, print_without_data) {
   vector_t v;
-  create_vector(&v);
+  EXPECT_TRUE(create_vector(&v));
 
   testing::internal::CaptureStdout();
   print_vector(&v);
@@ -75,7 +75,7 @@ TEST(Test6, test_file_input_output) {
   print_vector(&v);
   std::string output = testing::internal::GetCapturedStdout();
   EXPECT_EQ(output, "1 2 -10 20 15 \n");
-  delete_vector(&v);
+  EXPECT_TRUE(delete_vector(&v));
 }
 
 TEST(Test7, test_max_jump_end) {
@@ -90,7 +90,7 @@ TEST(Test7, test_max_jump_end) {
   int result =
       find_max_temperature_jump(v.temperature_array, v.size, 0, v.size);
   EXPECT_EQ(result, 40);
-  delete_vector(&v);
+  EXPECT_TRUE(delete_vector(&v));
 }
 
 TEST(Test8, test_max_jump_start) {
@@ -113,7 +113,7 @@ TEST(Test8, test_max_jump_start) {
   int result3 = find_max_temperature_jump(nullptr, 0, 0, 0);
   EXPECT_EQ(result3, -1);
 
-  delete_vector(&v);
+  EXPECT_TRUE(delete_vector(&v));
 }
 
 TEST(Test9, null) {
@@ -122,11 +122,10 @@ TEST(Test9, null) {
 
   vector_t v;
   EXPECT_TRUE(create_vector(&v));
-  v.temperature_array = nullptr;
-  EXPECT_FALSE(push_back(&v, 1));
 
   EXPECT_FALSE(read_vector(nullptr, stdin));
   EXPECT_FALSE(read_vector(&v, nullptr));
 
+  EXPECT_TRUE(delete_vector(&v));
   EXPECT_FALSE(delete_vector(nullptr));
 }

@@ -31,7 +31,7 @@ bool push_back(vector_t* v, int element) {
 }
 
 bool delete_vector(vector_t* v) {
-  if (!v) {
+  if (!v || !v->temperature_array) {
     return false;
   }
   free(v->temperature_array);
