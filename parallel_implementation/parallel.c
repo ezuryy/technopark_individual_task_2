@@ -15,7 +15,7 @@ static int find_max(const int *array, size_t size) {
 
 static size_t get_step(size_t size) {
   if (size <= 10) {
-    return 1;
+    return size;
   }
   size_t counter = 1;
   while (size / 10 > 2) {
@@ -65,7 +65,6 @@ static int delegate_work_to_processes(const int *temperatures,
     int pid = fork();
 
     if (pid == 0) {
-      printf("Hi! I'm child #%zu\n", counter_copy);
       max_jumps[counter_copy] = find_max_temperature_jump(
           temperatures, temperature_count, left_bound_copy, right_bound_copy);
       exit(0);
