@@ -14,12 +14,28 @@ static int find_max(const int *array, size_t size) {
 }
 
 static size_t get_step(size_t size) {
+  if (size <= 10) {
+    return 1;
+  }
   size_t counter = 1;
-  while (size > 0) {
+  while (size / 10 > 2) {
     size = size / 10;
     counter *= 10;
   }
   return counter;
+}
+
+static size_t get_max_pid(size_t size, size_t step) {
+  struct rlimit rlp;
+  getrlimit(RLIMIT_NPROC, &rlp);
+  size_t max_pid = (size_t)(((double)size + (double)step - 1) / (double)step);
+  if (size <= 10) {
+    max_pid = 1;
+  }
+  if (max_pid > rlp.rlim_max) {
+    max_pid = rlp.rlim_max;
+  }
+  return max_pid;
 }
 
 static int delegate_work_to_processes(const int *temperatures,
@@ -27,35 +43,29 @@ static int delegate_work_to_processes(const int *temperatures,
                                       size_t step) {
   int *max_jumps = mmap(NULL, max_pid * sizeof(int), PROT_READ | PROT_WRITE,
                         MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-  size_t *counter = mmap(NULL, 1 * sizeof(size_t), PROT_READ | PROT_WRITE,
-                         MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 
-  size_t *left_bound = mmap(NULL, 1 * sizeof(size_t), PROT_READ | PROT_WRITE,
-                            MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-  size_t *right_bound = mmap(NULL, 1 * sizeof(size_t), PROT_READ | PROT_WRITE,
-                             MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-  if (max_jumps == MAP_FAILED || counter == MAP_FAILED ||
-      left_bound == MAP_FAILED || right_bound == MAP_FAILED) {
+  if (max_jumps == MAP_FAILED) {
     printf("Mapping Failed\n");
     return -1;
   }
 
   int status;
-  *counter = 0;
-  *left_bound = 0;
-  *right_bound = step;
+  size_t counter = 0;
+  size_t left_bound = 0;
+  size_t right_bound = step;
 
-  while (*counter < max_pid) {
-    size_t counter_copy = *counter;
-    size_t left_bound_copy = *left_bound;
-    size_t right_bound_copy = *right_bound;
-    ++*counter;
-    *left_bound = *right_bound;
-    *right_bound += step;
+  while (counter < max_pid) {
+    size_t counter_copy = counter;
+    size_t left_bound_copy = left_bound;
+    size_t right_bound_copy = right_bound;
+    ++counter;
+    left_bound = right_bound;
+    right_bound += step;
 
     int pid = fork();
 
     if (pid == 0) {
+      printf("Hi! I'm child #%zu\n", counter_copy);
       max_jumps[counter_copy] = find_max_temperature_jump(
           temperatures, temperature_count, left_bound_copy, right_bound_copy);
       exit(0);
@@ -74,22 +84,13 @@ int work(const vector_t *v) {
   if (!v || !v->temperature_array || v->size == 0) {
     return -1;
   }
-  struct rlimit rlp;
-  getrlimit(RLIMIT_NPROC, &rlp);
-
   size_t step = get_step(v->size);
-  size_t max_pid =
-      (size_t)(((double)v->size + (double)step - 1) / (double)step);
-  if (max_pid > rlp.rlim_max) {
-    max_pid = rlp.rlim_max;
-  }
+  size_t max_pid = get_max_pid(v->size, step);
 
   int *temperatures = mmap(NULL, v->size * sizeof(int), PROT_READ | PROT_WRITE,
                            MAP_SHARED | MAP_ANONYMOUS, -1, 0);
   memcpy(temperatures, v->temperature_array, v->size * sizeof(int));
-  size_t temperature_count = v->size;
 
-  int result = delegate_work_to_processes(temperatures, temperature_count,
-                                          max_pid, step);
+  int result = delegate_work_to_processes(temperatures, v->size, max_pid, step);
   return result;
 }
