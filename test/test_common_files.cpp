@@ -27,58 +27,7 @@ TEST(Test2, push_back) {
   EXPECT_TRUE(delete_vector(&v));
 }
 
-TEST(Test3, print_without_data) {
-  vector_t v;
-  EXPECT_TRUE(create_vector(&v));
-
-  testing::internal::CaptureStdout();
-  print_vector(&v);
-  std::string output = testing::internal::GetCapturedStdout();
-  std::string answer = "\n";
-  EXPECT_EQ(output, answer);
-
-  EXPECT_TRUE(delete_vector(&v));
-}
-
-TEST(Test4, print_with_data) {
-  vector_t v;
-  create_vector(&v);
-  push_back(&v, 1);
-  push_back(&v, 2);
-  push_back(&v, 3);
-
-  testing::internal::CaptureStdout();
-  print_vector(&v);
-  std::string output = testing::internal::GetCapturedStdout();
-  EXPECT_EQ(output, "1 2 3 \n");
-
-  EXPECT_TRUE(delete_vector(&v));
-}
-
-TEST(Test5, print_with_nullptr) {
-  testing::internal::CaptureStdout();
-  print_vector(nullptr);
-  std::string output = testing::internal::GetCapturedStdout();
-  EXPECT_EQ(output, "");
-}
-
-TEST(Test6, test_file_input_output) {
-  vector_t v;
-  create_vector(&v);
-
-  FILE* file;
-  file = fopen("../test/input.txt", "r");
-  EXPECT_TRUE(read_vector(&v, file));
-  fclose(file);
-
-  testing::internal::CaptureStdout();
-  print_vector(&v);
-  std::string output = testing::internal::GetCapturedStdout();
-  EXPECT_EQ(output, "1 2 -10 20 15 \n");
-  EXPECT_TRUE(delete_vector(&v));
-}
-
-TEST(Test7, test_max_jump_end) {
+TEST(Test4, test_max_jump_end) {
   vector_t v;
   create_vector(&v);
 
@@ -93,7 +42,7 @@ TEST(Test7, test_max_jump_end) {
   EXPECT_TRUE(delete_vector(&v));
 }
 
-TEST(Test8, test_max_jump_start) {
+TEST(Test5, test_max_jump_start) {
   vector_t v;
   create_vector(&v);
 
@@ -116,7 +65,7 @@ TEST(Test8, test_max_jump_start) {
   EXPECT_TRUE(delete_vector(&v));
 }
 
-TEST(Test9, null) {
+TEST(Test6, null) {
   EXPECT_FALSE(create_vector(nullptr));
   EXPECT_FALSE(push_back(nullptr, 1));
 
