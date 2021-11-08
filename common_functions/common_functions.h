@@ -5,7 +5,9 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/mman.h>
+#include <sys/resource.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -24,6 +26,8 @@ bool delete_vector(vector_t* v);
 bool read_vector(vector_t* v, FILE* in);
 
 void print_vector(const vector_t* v);
+
+int work(const vector_t* v);
 
 int find_max_temperature_jump(const int* temps, size_t size, size_t left_bound,
                               size_t right_bound);

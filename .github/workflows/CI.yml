@@ -35,12 +35,37 @@ jobs:
       - name: Cppcheck
         run: |
           cppcheck --enable=all --suppress=missingInclude --error-exitcode=1 --inconclusive --language=c main.c common_functions/ parallel_implementation/ consistent_implementation/
-      - name: Check valgrind
+      - name: Check valgrind common files
         run: |
           cd _builds
           valgrind --leak-check=full --error-exitcode=1 ./test_common_files
+      - name: Check valgrind consistent implementation
+        run: |
+          cd _builds
           valgrind --leak-check=full --error-exitcode=1 ./test_consistent
+      - name: Check valgrind parallel implementation
+        run: |
+          cd _builds
           valgrind --leak-check=full --error-exitcode=1 ./test_parallel
+      - name: Compare consistent and parallel implementations
+        run: |
+          mkdir result_of_comparison
+          mkdir build_c
+          cd build_c
+          cmake ..
+          make
+          ./main -i ../test/jump6.txt -o result_of_comparison/consistent_result.txt
+          cd ..
+          mkdir build_p
+          cd build_p
+          cmake .. -DIS_STATIC=OFF
+          make
+          ./main -i ../test/jump6.txt -o result_of_comparison/parallel_result.txt
+      - name: Result of comparison
+        uses: actions/upload-artifact@v2
+        with:
+          name: result_of_comparison
+          path: result_of_comparison
       - name: Create coverage
         run: |
           cd _builds
@@ -48,13 +73,13 @@ jobs:
           ./test_consistent
           ./test_parallel
           cd ..
-          mkdir report
-          gcovr -r . --exclude _builds/ --exclude main.c --html --html-details -o report/my_coverage.html
+          mkdir coverage_report
+          gcovr -r . --exclude _builds/ --exclude build_c/ --exclude build_p/ --exclude main.c --html --html-details -o coverage_report/coverage.html
       - name: Code coverage report html
         uses: actions/upload-artifact@v2
         with:
           name: codecov_report
-          path: report
+          path: codecov_report
       - name: Run clang-format style check
         uses: DoozyX/clang-format-lint-action@v0.12
         with:
