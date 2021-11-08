@@ -47,6 +47,10 @@ jobs:
         run: |
           cd _builds
           valgrind --leak-check=full --error-exitcode=1 ./test_parallel
+      - name: Check valgrind main consistent
+        run: |
+          cd _builds
+          valgrind --leak-check=full --error-exitcode=1 ./main -i ../test/jump1.txt -o output.txt
       - name: Compare consistent and parallel implementations
         run: |
           mkdir result_of_comparison
@@ -54,13 +58,13 @@ jobs:
           cd build_c
           cmake ..
           make
-          ./main -i ../test/jump6.txt -o result_of_comparison/consistent_result.txt
+          ./main -i ../test/jump6.txt -o ../result_of_comparison/consistent_result.txt
           cd ..
           mkdir build_p
           cd build_p
           cmake .. -DIS_STATIC=OFF
           make
-          ./main -i ../test/jump6.txt -o result_of_comparison/parallel_result.txt
+          ./main -i ../test/jump6.txt -o ../result_of_comparison/parallel_result.txt
       - name: Result of comparison
         uses: actions/upload-artifact@v2
         with:
