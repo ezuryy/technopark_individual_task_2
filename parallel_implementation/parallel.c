@@ -45,7 +45,7 @@ static int delegate_work_to_processes(const int *temperatures,
                         MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 
   if (max_jumps == MAP_FAILED) {
-    printf("Mapping Failed\n");
+    printf("Mapping failed\n");
     return -1;
   }
 
@@ -88,10 +88,11 @@ int work(const vector_t *v) {
 
   int *temperatures = mmap(NULL, v->size * sizeof(int), PROT_READ | PROT_WRITE,
                            MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-  memcpy(temperatures, v->temperature_array, v->size * sizeof(int));
-  if (!temperatures) {
-      return -1;
+  if (temperatures == MAP_FAILED) {
+    printf("Mapping failed\n");
+    return -1;
   }
+  memcpy(temperatures, v->temperature_array, v->size * sizeof(int));
 
   int result = delegate_work_to_processes(temperatures, v->size, max_pid, step);
   return result;

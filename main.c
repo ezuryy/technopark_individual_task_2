@@ -28,24 +28,29 @@ int main(int argc, char *argv[]) {
   }
   vector_t v;
   if (!create_vector(&v)) {
-      return 1;
+    printf("Creating vector failed\n");
+    return 1;
   }
   if (!input) {
-      if (!read_vector(&v, stdin)) {
-          return 1;
-      }
+    if (!read_vector(&v, stdin)) {
+      printf("Reading vector failed\n");
+      return 1;
+    }
   } else {
     FILE *file = fopen(input, "r");
 
     if (!file) {
+      printf("Opening file failed\n");
       return 1;
     }
 
     if (!read_vector(&v, file)) {
-        return 1;
+      printf("Reading vector failed\n");
+      return 1;
     }
 
     if (fclose(file)) {
+      printf("Closing file failed\n");
       return 1;
     }
   }
@@ -68,6 +73,7 @@ int main(int argc, char *argv[]) {
     FILE *file = fopen(output, "w");
 
     if (!file) {
+      printf("Opening file failed\n");
       return 1;
     }
 
@@ -75,12 +81,14 @@ int main(int argc, char *argv[]) {
     fprintf(file, "Time : %ld mks\n\n", time / 1000);
 
     if (fclose(file)) {
+      printf("Closing file failed\n");
       return 1;
     }
   }
 
   if (!delete_vector(&v)) {
-      return 1;
+    printf("Deleting vector failed\n");
+    return 1;
   }
   if (input) {
     free(input);
