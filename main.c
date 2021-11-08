@@ -81,7 +81,7 @@ int main(int argc, char *argv[]) {
     }
 
     fprintf(file, "Result : %d \n", result);
-    printf("Time : %zu mks\n\n", time / calls_count);
+    fprintf(file, "Time : %zu mks\n\n", time / calls_count);
 
     if (fclose(file)) {
       printf("Closing file failed\n");
