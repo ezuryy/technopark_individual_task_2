@@ -82,13 +82,13 @@ jobs:
       - name: Code coverage report html
         uses: actions/upload-artifact@v2
         with:
-          name: codecov_report
-          path: codecov_report
+          name: coverage_report
+          path: coverage_report
       - name: Run clang-format style check
         uses: DoozyX/clang-format-lint-action@v0.12
         with:
           source: './common_functions ./consistent_implementation ./parallel_implementation ./test'
-          exclude: './_builds'
+          exclude: './_builds ./build_c ./build_p'
           extensions: 'h,cpp,c'
           clangFormatVersion: 12
           style: google
