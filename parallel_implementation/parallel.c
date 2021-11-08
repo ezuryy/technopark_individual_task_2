@@ -89,6 +89,9 @@ int work(const vector_t *v) {
   int *temperatures = mmap(NULL, v->size * sizeof(int), PROT_READ | PROT_WRITE,
                            MAP_SHARED | MAP_ANONYMOUS, -1, 0);
   memcpy(temperatures, v->temperature_array, v->size * sizeof(int));
+  if (!temperatures) {
+      return -1;
+  }
 
   int result = delegate_work_to_processes(temperatures, v->size, max_pid, step);
   return result;

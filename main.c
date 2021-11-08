@@ -27,9 +27,13 @@ int main(int argc, char *argv[]) {
     }
   }
   vector_t v;
-  create_vector(&v);
+  if (!create_vector(&v)) {
+      return 1;
+  }
   if (!input) {
-    read_vector(&v, stdin);
+      if (!read_vector(&v, stdin)) {
+          return 1;
+      }
   } else {
     FILE *file = fopen(input, "r");
 
@@ -37,7 +41,9 @@ int main(int argc, char *argv[]) {
       return 1;
     }
 
-    read_vector(&v, file);
+    if (!read_vector(&v, file)) {
+        return 1;
+    }
 
     if (fclose(file)) {
       return 1;
@@ -73,7 +79,9 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  delete_vector(&v);
+  if (!delete_vector(&v)) {
+      return 1;
+  }
   if (input) {
     free(input);
   }
