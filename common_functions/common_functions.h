@@ -25,8 +25,6 @@ bool delete_vector(vector_t* v);
 
 bool read_vector(vector_t* v, FILE* in);
 
-void print_vector(const vector_t* v);
-
 int work(const vector_t* v);
 
 int find_max_temperature_jump(const int* temps, size_t size, size_t left_bound,

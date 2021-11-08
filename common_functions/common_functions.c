@@ -57,16 +57,6 @@ bool read_vector(vector_t* v, FILE* in) {
   return true;
 }
 
-void print_vector(const vector_t* v) {
-  if (!v || !v->temperature_array) {
-    return;
-  }
-  for (size_t i = 0; i < v->size; ++i) {
-    printf("%d ", v->temperature_array[i]);
-  }
-  printf("\n");
-}
-
 int find_max_temperature_jump(const int* temps, size_t size, size_t left_bound,
                               size_t right_bound) {
   if (!temps || size <= left_bound) {
