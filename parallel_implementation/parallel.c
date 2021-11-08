@@ -14,12 +14,12 @@ static int find_max(const int *array, size_t size) {
 }
 
 static size_t get_step(size_t size) {
-    size_t counter = 1;
-    while (size > 0) {
-        size = size / 10;
-        counter *= 10;
-    }
-    return counter;
+  size_t counter = 1;
+  while (size > 0) {
+    size = size / 10;
+    counter *= 10;
+  }
+  return counter;
 }
 
 static int delegate_work_to_processes(const int *temperatures,
