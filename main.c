@@ -54,21 +54,25 @@ int main(int argc, char *argv[]) {
       return 1;
     }
   }
+  size_t calls_count = 5;
 
   struct timespec start, end;
   long int time;
 
   clock_gettime(CLOCK_REALTIME, &start);
-
-  int result = work(&v);
+  int result = -1;
+  for (size_t i = 0; i < calls_count; ++i) {
+    result = work(&v);
+  }
 
   clock_gettime(CLOCK_REALTIME, &end);
-  time =
-      1000000000 * (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec);
+  time = (1000000000 * (end.tv_sec - start.tv_sec) +
+          (end.tv_nsec - start.tv_nsec)) /
+         1000;
 
   if (!output) {
-    printf("Result == %d \n", result);
-    printf("Time : %ld mks\n\n", time / 1000);
+    printf("Result : %d \n", result);
+    printf("Time : %ld mks\n\n", time / calls_count);
   } else {
     FILE *file = fopen(output, "w");
 
@@ -77,8 +81,8 @@ int main(int argc, char *argv[]) {
       return 1;
     }
 
-    fprintf(file, "Result == %d \n", result);
-    fprintf(file, "Time : %ld mks\n\n", time / 1000);
+    fprintf(file, "Result : %d \n", result);
+    printf("Time : %ld mks\n\n", time / calls_count);
 
     if (fclose(file)) {
       printf("Closing file failed\n");
