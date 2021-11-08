@@ -28,7 +28,7 @@ target_link_libraries(_dynamic common_files)
 add_executable(main main.c)
 target_include_directories(main PUBLIC
         ${PROJECT_SOURCE_DIR}/common_functions)
-if(USE_STATIC)
+if(IS_STATIC)
     target_link_libraries(main _static common_files)
 else()
     target_link_libraries(main _dynamic common_files)

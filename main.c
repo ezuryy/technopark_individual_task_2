@@ -5,17 +5,19 @@
 
 int main(int argc, char *argv[]) {
   int opt;
-  char *opts = "-:i:o:";
+  char *opts = "i:o:h";
   char *input = NULL;
   char *output = NULL;
 
   while ((opt = getopt(argc, argv, opts)) != -1) {
     switch (opt) {
       case 'i':
-        input = optarg;
+        input = malloc((strlen(optarg) + 1) * sizeof(char));
+        strcpy(input, optarg);
         break;
       case 'o':
-        output = optarg;
+        output = malloc((strlen(optarg) + 1) * sizeof(char));
+        strcpy(output, optarg);
         break;
       case 'h':
         printf("Usage: %s [-h|-i|-o] <args>\n", argv[0]);
@@ -24,13 +26,12 @@ int main(int argc, char *argv[]) {
         break;
     }
   }
-
   vector_t v;
   create_vector(&v);
-  if (input == NULL) {
+  if (!input) {
     read_vector(&v, stdin);
   } else {
-    FILE *file = fopen(input, "rb");
+    FILE *file = fopen(input, "r");
 
     if (!file) {
       return 1;
@@ -43,28 +44,29 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  struct timespec mt1, mt2;
-  long int tt;
+  struct timespec start, end;
+  long int time;
 
-  clock_gettime(CLOCK_REALTIME, &mt1);
+  clock_gettime(CLOCK_REALTIME, &start);
 
   int result = work(&v);
 
-  clock_gettime(CLOCK_REALTIME, &mt2);
-  tt = 1000000000 * (mt2.tv_sec - mt1.tv_sec) + (mt2.tv_nsec - mt1.tv_nsec);
+  clock_gettime(CLOCK_REALTIME, &end);
+  time =
+      1000000000 * (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec);
 
-  if (output == NULL) {
+  if (!output) {
     printf("Result == %d \n", result);
-    printf("Time : %ld mks\n\n", tt / 1000);
+    printf("Time : %ld mks\n\n", time / 1000);
   } else {
-    FILE *file = fopen(output, "wb");
+    FILE *file = fopen(output, "w");
 
     if (!file) {
       return 1;
     }
 
     fprintf(file, "Result == %d \n", result);
-    fprintf(file, "Time : %ld mks\n\n", tt / 1000);
+    fprintf(file, "Time : %ld mks\n\n", time / 1000);
 
     if (fclose(file)) {
       return 1;
@@ -72,5 +74,11 @@ int main(int argc, char *argv[]) {
   }
 
   delete_vector(&v);
+  if (input) {
+    free(input);
+  }
+  if (output) {
+    free(output);
+  }
   return 0;
 }
