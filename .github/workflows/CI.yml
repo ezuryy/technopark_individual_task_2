@@ -85,8 +85,9 @@ jobs:
           name: coverage_report
           path: coverage_report
       - name: Run clang-format style check
-        uses: jidicula/clang-format-action@v4.3.0
+        uses: DoozyX/clang-format-lint-action@v0.12
         with:
-          clang-format-version: '13'
-          check-path: './common_functions ./consistent_implementation ./parallel_implementation ./test'
-          exclude-regex: './_builds ./build_c ./build_p'
+          source: './common_functions ./consistent_implementation ./parallel_implementation ./test'
+          exclude: './_builds ./build_c ./build_p'
+          extensions: 'h,cpp,c'
+          clangFormatVersion: 12
