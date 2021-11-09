@@ -12,9 +12,9 @@
 #include <unistd.h>
 
 typedef struct Vector {
-  size_t capacity;
-  size_t size;
-  int* temperature_array;
+    size_t capacity;
+    size_t size;
+    int* temperature_array;
 } vector_t;
 
 bool create_vector(vector_t* v);
