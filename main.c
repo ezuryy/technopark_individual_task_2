@@ -58,16 +58,15 @@ int main(int argc, char *argv[]) {
 
   struct timespec start, end;
 
-  clock_gettime(CLOCK_REALTIME, &start);
+  clock_gettime(CLOCK_MONOTONIC, &start);
   int result = -1;
   for (size_t i = 0; i < calls_count; ++i) {
     result = work(&v);
   }
 
-  clock_gettime(CLOCK_REALTIME, &end);
+  clock_gettime(CLOCK_MONOTONIC, &end);
   size_t time = (1000000000 * (end.tv_sec - start.tv_sec) +
-                 (end.tv_nsec - start.tv_nsec)) /
-                1000;
+                 (end.tv_nsec - start.tv_nsec)) / 1000;
 
   if (!output) {
     printf("Result : %d \n", result);
