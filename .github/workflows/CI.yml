@@ -91,3 +91,4 @@ jobs:
           exclude: './_builds ./build_c ./build_p'
           extensions: 'h,cpp,c'
           clangFormatVersion: 12
+          style: google
