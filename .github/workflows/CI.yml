@@ -58,13 +58,13 @@ jobs:
           cd build_c
           cmake ..
           make
-          ./main -i ../test/jump6.txt -o ../result_of_comparison/consistent_result.txt
+          ./main -i ../test/jump8.txt -o ../result_of_comparison/consistent_result.txt
           cd ..
           mkdir build_p
           cd build_p
           cmake .. -DIS_STATIC=OFF
           make
-          ./main -i ../test/jump6.txt -o ../result_of_comparison/parallel_result.txt
+          ./main -i ../test/jump8.txt -o ../result_of_comparison/parallel_result.txt
       - name: Result of comparison
         uses: actions/upload-artifact@v2
         with:
