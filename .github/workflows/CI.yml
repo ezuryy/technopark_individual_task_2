@@ -89,3 +89,4 @@ jobs:
         with:
           clang-format-version: '13'
           check-path: './common_functions ./consistent_implementation ./parallel_implementation ./test'
+          exclude-regex: './_builds ./build_c ./build_p'
