@@ -92,7 +92,10 @@ int work(const vector_t *v) {
     printf("Mapping failed\n");
     return -1;
   }
-  memcpy(temperatures, v->temperature_array, v->size * sizeof(int));
+  if (!memcpy(temperatures, v->temperature_array, v->size * sizeof(int))) {
+      printf("memcpy() failed\n");
+      return -1;
+  }
 
   int result = delegate_work_to_processes(temperatures, v->size, max_pid, step);
   return result;
