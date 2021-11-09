@@ -14,26 +14,22 @@ static int find_max(const int *array, size_t size) {
 }
 
 static size_t get_step(size_t size) {
-  if (size <= 10) {
+  if (size <= 20) {
     return size;
   }
-  size_t counter = 1;
-  while (size / 10 > 2) {
-    size = size / 10;
-    counter *= 10;
-  }
-  return counter;
+  return size / 10;
 }
 
-static size_t get_max_pid(size_t size, size_t step) {
+static size_t get_max_pid(size_t size, size_t *step) {
   struct rlimit rlp;
   getrlimit(RLIMIT_NPROC, &rlp);
-  size_t max_pid = (size_t)(((double)size + (double)step - 1) / (double)step);
-  if (size <= 10) {
+  size_t max_pid = (size_t)(((double)size + (double)*step - 1) / (double)*step);
+  if (size <= 20) {
     max_pid = 1;
   }
   if (max_pid > rlp.rlim_max) {
     max_pid = rlp.rlim_max;
+    *step = (size_t)(((double)size + (double)max_pid - 1) / (double)max_pid);
   }
   return max_pid;
 }
@@ -84,7 +80,7 @@ int work(const vector_t *v) {
     return -1;
   }
   size_t step = get_step(v->size);
-  size_t max_pid = get_max_pid(v->size, step);
+  size_t max_pid = get_max_pid(v->size, &step);
 
   int *temperatures = mmap(NULL, v->size * sizeof(int), PROT_READ | PROT_WRITE,
                            MAP_SHARED | MAP_ANONYMOUS, -1, 0);
