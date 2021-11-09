@@ -93,8 +93,8 @@ int work(const vector_t *v) {
     return -1;
   }
   if (!memcpy(temperatures, v->temperature_array, v->size * sizeof(int))) {
-      printf("memcpy() failed\n");
-      return -1;
+    printf("memcpy() failed\n");
+    return -1;
   }
 
   int result = delegate_work_to_processes(temperatures, v->size, max_pid, step);
