@@ -15,7 +15,7 @@ target_include_directories(common_files PUBLIC
         ${PROJECT_SOURCE_DIR}/common_functions)
 
 # lib_static
-add_library(_static SHARED consistent_implementation/consistent.c)
+add_library(_static STATIC consistent_implementation/consistent.c)
 target_include_directories(_static PUBLIC ${PROJECT_SOURCE_DIR}/common_functions)
 target_link_libraries(_static common_files)
 
